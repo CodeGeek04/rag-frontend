@@ -15,6 +15,7 @@ const config: Config = {
         purple: "#633A92",
         grey: "#333333",
         grey2: "#D9D9D9",
+        grey3: "#686868",
       },
       height: {
         98: "32rem",

@@ -4,6 +4,7 @@ import { collection, document } from "@/types";
 import AddCollection from "./AddCollection";
 import { useEffect, useState } from "react";
 import AddDocument from "./AddDocument";
+import { FaTrash } from "react-icons/fa";
 
 const Collections: React.FC<{
   collections: collection[];
@@ -25,6 +26,18 @@ const Collections: React.FC<{
     console.log("Data: ", data);
     setDocuments(data);
   };
+
+  const deleteDocument = async (documentId: string) => {
+    const response = await fetch(
+      `http://localhost:3001/delete-document?documentId=${documentId}`,
+      {
+        method: "POST",
+      }
+    );
+    const data = await response.json();
+    setDocuments(documents.filter((document) => document.id !== documentId));
+  };
+
   useEffect(() => {
     if (currentCollection) {
       fetchDocuments(currentCollection.collectionId);
@@ -69,19 +82,21 @@ const Collections: React.FC<{
           {documents.map((document) => (
             <div
               key={document.id}
-              className="flex w-5/6 flex-col text-xs text-white text-clip overflow-hidden bg-black mt-2 rounded-2xl items-center p-2 mb-4"
+              className="flex w-5/6 flex-row  max-h-full overflow-y-auto bg-black mt-2 rounded-2xl p-2 font-poppins"
             >
-              {/* {document.name} */}
+              <div className="text-xs text-white truncate">{document.name}</div>
+              <button className="" onClick={() => deleteDocument(document.id)}>
+                <FaTrash color="white" />
+              </button>
             </div>
           ))}
+          <button
+            className="w-full text-black font-bold text-3xl p-1 font-poppins"
+            onClick={() => setIsAddDocument(!isAddDocument)}
+          >
+            +
+          </button>
         </div>
-
-        <button
-          onClick={() => setIsAddDocument(!isAddDocument)}
-          className="bg-grey2 w-5/6 mt-4 mb-4 rounded-2xl text-black font-bold text-2xl p-1 font-poppins"
-        >
-          Add Document
-        </button>
         {isAddDocument && (
           <AddDocument
             collectionId={currentCollection.collectionId}
